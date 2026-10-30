@@ -47,3 +47,24 @@ export async function getTopRatedMovies() {
   const data = await tmdbFetch<MovieList>("/movie/top_rated");
   return data.results;
 }
+export type MovieDetails = Movie & {
+  runtime: number | null;
+  tagline: string;
+  genres: { id: number; name: string }[];
+};
+
+export async function getMoviesPage(page: number) {
+  const data = await tmdbFetch<MovieList>(`/movie/popular?page=${page}`);
+  return data.results;
+}
+
+export async function searchMovies(query: string) {
+  const data = await tmdbFetch<MovieList>(
+    `/search/movie?query=${encodeURIComponent(query)}`
+  );
+  return data.results;
+}
+
+export async function getMovieDetails(id: string) {
+  return tmdbFetch<MovieDetails>(`/movie/${id}`);
+}
