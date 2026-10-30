@@ -1,9 +1,22 @@
-export default function Home() {
+import MovieRow from "@/components/MovieRow";
+import {
+  getPopularMovies,
+  getTopRatedMovies,
+  getTrendingMovies,
+} from "@/lib/tmdb";
+
+export default async function Home() {
+  const [trending, popular, topRated] = await Promise.all([
+    getTrendingMovies(),
+    getPopularMovies(),
+    getTopRatedMovies(),
+  ]);
+
   return (
-    <main className="flex h-full min-h-[70vh] items-center justify-center pt-20">
-      <h1 className="text-5xl font-bold tracking-widest text-red-600">
-        CINEVAULT
-      </h1>
+    <main className="flex flex-col gap-8 pt-24">
+      <MovieRow title="Trending this week" movies={trending} />
+      <MovieRow title="Popular" movies={popular} />
+      <MovieRow title="Top rated" movies={topRated} />
     </main>
   );
 }
