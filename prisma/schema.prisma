@@ -16,6 +16,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  watchlist     WatchlistItem[]
 
   @@map("user")
 }
@@ -62,4 +63,16 @@ model Verification {
   updatedAt  DateTime? @updatedAt
 
   @@map("verification")
+}
+model WatchlistItem {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movieId    Int
+  title      String
+  posterPath String?
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, movieId])
+  @@map("watchlist_item")
 }

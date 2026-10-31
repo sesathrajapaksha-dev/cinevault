@@ -1,6 +1,10 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getMovieDetails, IMAGE_BASE } from "@/lib/tmdb";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import WatchlistButton from "@/components/WatchlistButton";
 
 export default async function MoviePage({
   params,
@@ -17,7 +21,14 @@ export default async function MoviePage({
   }
 
   const year = movie.release_date?.slice(0, 4);
-
+  const session = await auth.api.getSession({ headers: await headers() });
+  const saved = session
+    ? !!(await prisma.watchlistItem.findUnique({
+        where: {
+          userId_movieId: { userId: session.user.id, movieId: movie.id },
+        },
+      }))
+    : false;
   return (
     <main className="relative pb-12 pt-24">
       {movie.backdrop_path && (
@@ -68,6 +79,11 @@ export default async function MoviePage({
           </div>
 
           <p className="mt-6 leading-relaxed text-gray-200">{movie.overview}</p>
+                    <WatchlistButton
+            movieId={movie.id}
+            initialSaved={saved}
+            loggedIn={!!session}
+          />
         </div>
       </div>
     </main>

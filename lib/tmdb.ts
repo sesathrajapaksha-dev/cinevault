@@ -68,3 +68,4 @@ export async function searchMovies(query: string) {
 export async function getMovieDetails(id: string) {
   return tmdbFetch<MovieDetails>(`/movie/${id}`);
 }
+export type MovieSummary = Pick<Movie, "id" | "title" | "poster_path">;

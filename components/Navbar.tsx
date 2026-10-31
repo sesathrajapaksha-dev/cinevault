@@ -34,6 +34,11 @@ export default async function Navbar() {
           {session ? (
             <>
               <li>
+                <Link href="/watchlist" className="hover:text-white">
+                  My list
+                </Link>
+              </li>
+              <li>
                 <Link href="/account" className="text-white hover:underline">
                   {session.user.name}
                 </Link>
