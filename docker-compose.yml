@@ -1,0 +1,45 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: cinevault
+      POSTGRES_PASSWORD: cinevault
+      POSTGRES_DB: cinevault
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U cinevault -d cinevault" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: .
+      target: builder
+    command: npx prisma migrate deploy
+    environment:
+      DATABASE_URL: postgresql://cinevault:cinevault@db:5432/cinevault
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    build:
+      context: .
+      target: runner
+    ports:
+      - "8080:3000"
+    environment:
+      DATABASE_URL: postgresql://cinevault:cinevault@db:5432/cinevault
+      BETTER_AUTH_URL: http://localhost:8080
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      TMDB_API_KEY: ${TMDB_API_KEY}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:
