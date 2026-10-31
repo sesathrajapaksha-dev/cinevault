@@ -17,6 +17,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   watchlist     WatchlistItem[]
+  history       WatchHistory[]
 
   @@map("user")
 }
@@ -75,4 +76,16 @@ model WatchlistItem {
 
   @@unique([userId, movieId])
   @@map("watchlist_item")
+}
+model WatchHistory {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movieId    Int
+  title      String
+  posterPath String?
+  watchedAt  DateTime @default(now())
+
+  @@unique([userId, movieId])
+  @@map("watch_history")
 }

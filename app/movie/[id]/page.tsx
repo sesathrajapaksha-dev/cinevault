@@ -1,9 +1,10 @@
 import Image from "next/image";
-import { notFound } from "next/navigation";
-import { getMovieDetails, IMAGE_BASE } from "@/lib/tmdb";
+import Link from "next/link";
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getMovieDetails, IMAGE_BASE } from "@/lib/tmdb";
 import WatchlistButton from "@/components/WatchlistButton";
 
 export default async function MoviePage({
@@ -12,6 +13,7 @@ export default async function MoviePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  if (!/^\d+$/.test(id)) notFound();
 
   let movie;
   try {
@@ -21,6 +23,7 @@ export default async function MoviePage({
   }
 
   const year = movie.release_date?.slice(0, 4);
+
   const session = await auth.api.getSession({ headers: await headers() });
   const saved = session
     ? !!(await prisma.watchlistItem.findUnique({
@@ -29,6 +32,7 @@ export default async function MoviePage({
         },
       }))
     : false;
+
   return (
     <main className="relative pb-12 pt-24">
       {movie.backdrop_path && (
@@ -62,7 +66,11 @@ export default async function MoviePage({
           )}
 
           <p className="mt-3 text-sm text-gray-300">
-            {[year, movie.runtime ? `${movie.runtime} min` : null, `★ ${movie.vote_average.toFixed(1)}`]
+            {[
+              year,
+              movie.runtime ? `${movie.runtime} min` : null,
+              `★ ${movie.vote_average.toFixed(1)}`,
+            ]
               .filter(Boolean)
               .join(" · ")}
           </p>
@@ -79,11 +87,20 @@ export default async function MoviePage({
           </div>
 
           <p className="mt-6 leading-relaxed text-gray-200">{movie.overview}</p>
-                    <WatchlistButton
-            movieId={movie.id}
-            initialSaved={saved}
-            loggedIn={!!session}
-          />
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/watch/${movie.id}`}
+              className="mt-6 rounded bg-white px-5 py-2 text-sm font-semibold text-black hover:bg-gray-200"
+            >
+              ▶ Watch trailer
+            </Link>
+            <WatchlistButton
+              movieId={movie.id}
+              initialSaved={saved}
+              loggedIn={!!session}
+            />
+          </div>
         </div>
       </div>
     </main>

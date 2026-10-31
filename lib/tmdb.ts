@@ -69,3 +69,14 @@ export async function getMovieDetails(id: string) {
   return tmdbFetch<MovieDetails>(`/movie/${id}`);
 }
 export type MovieSummary = Pick<Movie, "id" | "title" | "poster_path">;
+type Video = { key: string; site: string; type: string; official: boolean };
+
+export async function getMovieTrailer(id: string) {
+  const data = await tmdbFetch<{ results: Video[] }>(`/movie/${id}/videos`);
+  const youtube = data.results.filter((v) => v.site === "YouTube");
+  const pick =
+    youtube.find((v) => v.type === "Trailer" && v.official) ??
+    youtube.find((v) => v.type === "Trailer") ??
+    youtube[0];
+  return pick?.key ?? null;
+}
