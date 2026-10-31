@@ -14,6 +14,10 @@ A Netflix-style streaming discovery website, built to learn full-stack web devel
 2. Copy `.env.example` to `.env.local` and add your TMDB API key
 3. Start the dev server: `npm run dev`
 4. Open http://localhost:3000
+## Run with Docker
+1. Copy `.env.example` to `.env.local` and add your TMDB API key and a random `BETTER_AUTH_SECRET`
+2. Run `docker compose --env-file .env.local up --build`
+3. Open http://localhost:8080
 
 ## Roadmap
 - [x] Step 1: Project setup
