@@ -20,7 +20,7 @@ A Netflix-style streaming discovery website, built to learn full-stack web devel
 - [x] Step 2: Layout and dark theme
 - [x] Step 3: TMDB integration and home page
 - [x] Step 4: Browse, search and detail pages
-- [ ] Step 5: Database and authentication
+- [x] Step 5: Database and authentication
 - [ ] Step 6: Watchlist and continue watching
 - [ ] Step 7: Watch page
 - [ ] Step 8: Docker and CI
