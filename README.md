@@ -33,3 +33,7 @@ A Netflix-style streaming discovery website, built to learn full-stack web devel
 
 ## Attribution
 This product uses the TMDB API but is not endorsed or certified by TMDB.
+
+## Deployment
+Deployed on AWS EC2 (Ubuntu) with Docker Compose (Next.js app + PostgreSQL).
+To update: `git pull && sudo docker compose up -d --build`
